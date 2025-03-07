@@ -30,7 +30,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh '''
                         # Log in to Docker Hub
-                        echo "$DOCKER_PASSWORD" |  docker login -u "$DOCKER_USERNAME" --password-stdin
+                        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
                         # Tag and push the image to Docker Hub
                            docker tag django_travel $DOCKER_USERNAME/travel_app:latest
                            docker push $DOCKER_USERNAME/travel_app:latest
@@ -40,21 +40,18 @@ pipeline {
                 }
             }
         }
-         stage('Running the image ') {
+
+        stage('Running the image') {
             steps {
                 script {
-                    echo 'Running the  Docker image...'
+                    echo 'Running the Docker image...'
                     sh '''
                     # Ensure that the Jenkins user can access Docker (optional if sudo is configured)
-                         docker run -d -p 8000:8000 $DOCKER_USERNAME/travel_app:latest 
+                         docker run -d -p 8000:8000 $DOCKER_USERNAME/travel_app:latest
                     '''
                 }
             }
         }
-
-
-        
-        
     }
 
     post {
@@ -63,13 +60,9 @@ pipeline {
         }
         success {
             echo 'Pipeline succeeded!'
-            
-            
         }
         failure {
             echo 'Pipeline failed!'
-            
-            
         }
     }
 }
