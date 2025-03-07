@@ -47,7 +47,7 @@ pipeline {
                     echo 'Running the Docker image...'
                     sh '''
                     # Ensure that the Jenkins user can access Docker (optional if sudo is configured)
-                         docker run -d -p 8000:8000 $DOCKER_USERNAME/travel_app:latest
+                         docker run -d -p 8008:8008 $DOCKER_USERNAME/travel_app:latest
                     '''
                 }
             }
