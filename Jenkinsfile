@@ -41,18 +41,19 @@ pipeline {
             }
         }
 
-        stage('Running the image') {
+       stage('Running the image') {
             steps {
                 script {
                     echo 'Running the Docker image...'
-                    echo "Docker image: $DOCKER_USERNAME/travel_app:latest"  // Debug line
-                    sh '''
-                    # Ensure that the Jenkins user can access Docker (optional if sudo is configured)
-                    docker run -d -p 8008:8008 $DOCKER_USERNAME/travel_app:latest
-                    '''
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh '''
+                        docker run -d -p 8008:8008 $DOCKER_USERNAME/travel_app:latest
+                        '''
+                    }
                 }
             }
-        }
+    }
+
 
     }
 
