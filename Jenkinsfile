@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { label 'slave1' }
     environment {
         DOCKERHUB_CREDENTIALS = credentials('docker-hub') // Environment variable for Docker Hub credentials
     }
@@ -7,7 +7,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'Checking out the code...'
-                git branch: 'main', credentialsId: 'github', url: 'https://github.com/Sanjeevvisuu/travel-booking.git'
+                git branch: 'main', credentialsId: 'github', url: 'https://github.com/Sanjeevvisuu/EKS.git'
             }
         }
 
@@ -40,22 +40,21 @@ pipeline {
                 }
             }
         }
-
-        stage('Deploy in EKS cluster') {
+         stage('Running the image ') {
             steps {
                 script {
-                    echo 'Deploying to EKS cluster...'
+                    echo 'Running the  Docker image...'
                     sh '''
-                       aws eks --region ap-south-1 update-kubeconfig --name EKS-cluster
-                       kubectl get pods
-                       kubectl apply -f k8s.yaml 
-                       kubectl get pods
-                       kubectl get svc
+                    # Ensure that the Jenkins user can access Docker (optional if sudo is configured)
+                         docker run -d -p 8000:8000 $DOCKER_USERNAME/travel_app:latest 
                     '''
-                    echo 'Deployed application to EKS cluster.'
                 }
             }
         }
+
+
+        
+        
     }
 
     post {
